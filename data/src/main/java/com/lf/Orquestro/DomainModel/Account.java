@@ -34,7 +34,7 @@ public class Account implements Serializable {
     private String password;
 
     @Column(name = "is_active")
-    private boolean isActive;
+    private boolean isActive = true;
 
     @Column(nullable = false, unique = true)
     private String email;
