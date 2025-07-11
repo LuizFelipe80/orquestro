@@ -21,8 +21,9 @@
     </properties>
     
     <modules>
-        <module>data</module>
+        <module>system</module>
         <module>app</module>
+        <module>administration</module>
     </modules>
 
 </project>
