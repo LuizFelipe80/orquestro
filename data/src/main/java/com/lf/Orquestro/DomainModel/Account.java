@@ -1,7 +1,9 @@
 package com.lf.Orquestro.DomainModel;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 import com.lf.Orquestro.DomainModel.enums.State;
 
@@ -9,10 +11,15 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 
 @Entity
@@ -42,6 +49,15 @@ public class Account implements Serializable {
     @Enumerated(EnumType.STRING)
     @Column(name = "account_state", nullable = false)
     private State state = State.ACTIVE;
+    
+    @JsonManagedReference
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+        name = "account_roles",
+        joinColumns = @JoinColumn(name = "account_id"),
+        inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private Set<UserRole> roles = new HashSet<>();
 
     
     public Account() {
@@ -112,7 +128,14 @@ public class Account implements Serializable {
     public void setState(State state) {
         this.state = state;
     }
+    
+    public Set<UserRole> getRoles() {
+        return roles;
+    }
 
+    public void setRoles(Set<UserRole> roles) {
+        this.roles = roles;
+    }
 
     @Override
     public int hashCode() {

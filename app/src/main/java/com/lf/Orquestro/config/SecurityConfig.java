@@ -12,26 +12,20 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        // BCrypt é o padrão da indústria para hashing de senhas.
-        return new BCryptPasswordEncoder();
-    }
+	@Bean
+	public PasswordEncoder passwordEncoder() {
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-            // Desabilita o CSRF. Para uma API REST stateless, isso é comum.
-            // Para aplicações web com formulários, seria necessário configurar.
-            .csrf(csrf -> csrf.disable())
-            // Define as regras de autorização para as requisições
-            .authorizeHttpRequests(auth -> auth
-                // Permite que qualquer um (autenticado ou não) acesse nossos endpoints de contas
-                .requestMatchers("/api/accounts/**").permitAll()
-                // Exige autenticação para qualquer outra requisição
-                .anyRequest().authenticated()
-            );
+		return new BCryptPasswordEncoder();
+	}
 
-        return http.build();
-    }
+	@Bean
+	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+		http
+
+				.csrf(csrf -> csrf.disable())
+				.authorizeHttpRequests(auth -> auth.requestMatchers("/api/accounts/**", "/api/user-roles/**")
+						.permitAll().anyRequest().authenticated());
+
+		return http.build();
+	}
 }
