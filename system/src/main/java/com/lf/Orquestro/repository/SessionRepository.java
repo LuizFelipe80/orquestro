@@ -12,7 +12,7 @@ import com.lf.Orquestro.DomainModel.Session;
 @Repository
 public interface SessionRepository extends JpaRepository<Session, Long> {
 
-	List<Session> findByAccountId(Long accountId);
+	List<Session> findByUserId(Long userId);
 
 	Optional<Session> findBySessionToken(UUID sessionToken);
 

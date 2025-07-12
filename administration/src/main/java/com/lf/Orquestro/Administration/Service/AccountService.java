@@ -2,6 +2,7 @@ package com.lf.Orquestro.Administration.Service;
 
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,7 +17,6 @@ public class AccountService {
 	private final AccountRepository accountRepository;
 	private final PasswordEncoder passwordEncoder;
 
-	// Injetamos o AccountRepository e o PasswordEncoder
 	public AccountService(AccountRepository accountRepository, PasswordEncoder passwordEncoder) {
 		this.accountRepository = accountRepository;
 		this.passwordEncoder = passwordEncoder;
@@ -46,7 +46,6 @@ public class AccountService {
 		existingAccount.setName(accountDetails.getName());
 		existingAccount.setEmail(accountDetails.getEmail());
 		existingAccount.setState(accountDetails.getState());
-		existingAccount.setActive(accountDetails.isActive());
 
 		return accountRepository.save(existingAccount);
 	}
@@ -60,5 +59,20 @@ public class AccountService {
 			account.setState(State.INACTIVE);
 		}
 		accountRepository.save(account);
+	}
+
+	@Transactional
+	public Account restoreAccount(Long id) {
+		Account account = findAccountById(id);
+		if (account.getState() == State.TRASHED || account.getState() == State.INACTIVE) {
+			account.setState(State.ACTIVE);
+		}
+		return accountRepository.save(account);
+	}
+
+	@Transactional
+	@PreAuthorize("hasRole('DEVELOPER')")
+	public void physicalDeleteAccount(Long id) {
+		accountRepository.deleteById(id);
 	}
 }

@@ -20,39 +20,51 @@ import com.lf.Orquestro.Administration.Service.AccountService;
 @RequestMapping("/api/admin/accounts")
 public class AccountController {
 
-    private final AccountService accountService;
+	private final AccountService accountService;
 
-    public AccountController(AccountService accountService) {
-        this.accountService = accountService;
-    }
+	public AccountController(AccountService accountService) {
+		this.accountService = accountService;
+	}
 
-    @PostMapping
-    public ResponseEntity<Account> createAccount(@RequestBody Account account) {
-        Account createdAccount = accountService.createAccount(account);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdAccount);
-    }
+	@PostMapping
+	public ResponseEntity<Account> createAccount(@RequestBody Account account) {
+		Account createdAccount = accountService.createAccount(account);
+		return ResponseEntity.status(HttpStatus.CREATED).body(createdAccount);
+	}
 
-    @GetMapping
-    public ResponseEntity<List<Account>> getAllAccounts() {
-        List<Account> accounts = accountService.findAllAccounts();
-        return ResponseEntity.ok(accounts);
-    }
+	@GetMapping
+	public ResponseEntity<List<Account>> getAllAccounts() {
+		List<Account> accounts = accountService.findAllAccounts();
+		return ResponseEntity.ok(accounts);
+	}
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Account> getAccountById(@PathVariable Long id) {
-        Account account = accountService.findAccountById(id);
-        return ResponseEntity.ok(account);
-    }
+	@GetMapping("/{id}")
+	public ResponseEntity<Account> getAccountById(@PathVariable Long id) {
+		Account account = accountService.findAccountById(id);
+		return ResponseEntity.ok(account);
+	}
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Account> updateAccount(@PathVariable Long id, @RequestBody Account accountDetails) {
-        Account updatedAccount = accountService.updateAccount(id, accountDetails);
-        return ResponseEntity.ok(updatedAccount);
-    }
+	@PutMapping("/{id}")
+	public ResponseEntity<Account> updateAccount(@PathVariable Long id, @RequestBody Account accountDetails) {
+		Account updatedAccount = accountService.updateAccount(id, accountDetails);
+		return ResponseEntity.ok(updatedAccount);
+	}
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteAccount(@PathVariable Long id) {
-        accountService.deleteAccount(id);
-        return ResponseEntity.noContent().build();
-    }
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Void> deleteAccount(@PathVariable Long id) {
+		accountService.deleteAccount(id);
+		return ResponseEntity.noContent().build();
+	}
+
+	@PostMapping("/{id}/restore")
+	public ResponseEntity<Account> restoreAccount(@PathVariable Long id) {
+		Account restoredAccount = accountService.restoreAccount(id);
+		return ResponseEntity.ok(restoredAccount);
+	}
+
+	@DeleteMapping("/{id}/physical")
+	public ResponseEntity<Void> physicalDeleteAccount(@PathVariable Long id) {
+		accountService.physicalDeleteAccount(id);
+		return ResponseEntity.noContent().build();
+	}
 }
