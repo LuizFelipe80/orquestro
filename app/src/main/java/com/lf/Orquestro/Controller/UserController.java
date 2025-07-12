@@ -2,7 +2,6 @@ package com.lf.Orquestro.Controller;
 
 import java.util.List;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,7 +28,7 @@ public class UserController {
 	@PostMapping
 	public ResponseEntity<User> createUser(@RequestBody User user) {
 		User savedUser = userService.createUser(user);
-		return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
+		return ResponseEntity.ok(savedUser);
 	}
 
 	@GetMapping("/{id}")
@@ -44,16 +43,16 @@ public class UserController {
 		return ResponseEntity.ok(users);
 	}
 
-	@PutMapping("/{id}")
-	public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User userDetails) {
-		User updatedUser = userService.updateUser(id, userDetails);
-		return ResponseEntity.ok(updatedUser);
-	}
-
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
 		userService.deleteUser(id);
 		return ResponseEntity.noContent().build();
+	}
+
+	@PutMapping("/{id}")
+	public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User userDetails) {
+		User updatedUser = userService.updateUser(id, userDetails);
+		return ResponseEntity.ok(updatedUser);
 	}
 
 	@PostMapping("/{userId}/roles/{roleId}")
@@ -63,8 +62,14 @@ public class UserController {
 	}
 
 	@DeleteMapping("/{userId}/roles/{roleId}")
-	public ResponseEntity<Void> removeRoleFromUser(@PathVariable Long userId, @PathVariable Long roleId) {
-		userService.removeRoleFromUser(userId, roleId);
+	public ResponseEntity<User> removeRoleFromUser(@PathVariable Long userId, @PathVariable Long roleId) {
+		User updatedUser = userService.removeRoleFromUser(userId, roleId);
+		return ResponseEntity.ok(updatedUser);
+	}
+
+	@DeleteMapping("/{id}/physical")
+	public ResponseEntity<Void> physicalDeleteUser(@PathVariable Long id) {
+		userService.physicalDeleteUser(id);
 		return ResponseEntity.noContent().build();
 	}
 }

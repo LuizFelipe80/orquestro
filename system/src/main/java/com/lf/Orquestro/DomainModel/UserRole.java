@@ -6,8 +6,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
-// REMOVIDO o import do JsonBackReference
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -34,9 +32,6 @@ public class UserRole implements Serializable {
     @Column(name = "model_guid", nullable = false, unique = true)
     private UUID modelGUID;
 
-    // --- CAMPO E RELACIONAMENTO COM USER/ACCOUNT REMOVIDO DAQUI ---
-    // A linha "@JsonBackReference private Set<User> users" foi apagada.
-
     @ManyToMany
     @JoinTable(
         name = "role_grantable_roles",
@@ -44,6 +39,8 @@ public class UserRole implements Serializable {
         inverseJoinColumns = @JoinColumn(name = "grantable_role_id")
     )
     private Set<UserRole> grantableRoles = new HashSet<>();
+    
+    // O relacionamento de volta para User foi completamente removido daqui.
 
     public UserRole() {
         this.modelGUID = UUID.randomUUID();
@@ -63,8 +60,6 @@ public class UserRole implements Serializable {
     public void setModelGUID(UUID modelGUID) { this.modelGUID = modelGUID; }
     public Set<UserRole> getGrantableRoles() { return grantableRoles; }
     public void setGrantableRoles(Set<UserRole> grantableRoles) { this.grantableRoles = grantableRoles; }
-
-    // --- GETTER E SETTER PARA USERS/ACCOUNTS REMOVIDO ---
 
     @Override
     public int hashCode() {

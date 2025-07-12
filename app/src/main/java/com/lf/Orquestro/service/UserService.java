@@ -2,6 +2,7 @@ package com.lf.Orquestro.service;
 
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -67,7 +68,6 @@ public class UserService {
 		User user = findUserById(userId);
 		UserRole role = userRoleRepository.findById(roleId)
 				.orElseThrow(() -> new RuntimeException("Role not found for id: " + roleId));
-
 		user.getRoles().add(role);
 		return userRepository.save(user);
 	}
@@ -77,8 +77,16 @@ public class UserService {
 		User user = findUserById(userId);
 		UserRole role = userRoleRepository.findById(roleId)
 				.orElseThrow(() -> new RuntimeException("Role not found for id: " + roleId));
-
 		user.getRoles().remove(role);
 		return userRepository.save(user);
+	}
+
+	@Transactional
+	@PreAuthorize("hasRole('DEVELOPER')")
+	public void physicalDeleteUser(Long id) {
+		if (!userRepository.existsById(id)) {
+			throw new RuntimeException("User not found for id: " + id);
+		}
+		userRepository.deleteById(id);
 	}
 }
