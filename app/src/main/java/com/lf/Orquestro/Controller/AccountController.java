@@ -1,8 +1,8 @@
 package com.lf.Orquestro.Controller;
 
+import java.net.URI;
 import java.util.List;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.lf.Orquestro.Administration.DomainModel.Account;
 import com.lf.Orquestro.Administration.Service.AccountService;
@@ -29,7 +30,11 @@ public class AccountController {
 	@PostMapping
 	public ResponseEntity<Account> createAccount(@RequestBody Account account) {
 		Account createdAccount = accountService.createAccount(account);
-		return ResponseEntity.status(HttpStatus.CREATED).body(createdAccount);
+
+		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+				.buildAndExpand(createdAccount.getId()).toUri();
+
+		return ResponseEntity.created(location).body(createdAccount);
 	}
 
 	@GetMapping
@@ -60,11 +65,5 @@ public class AccountController {
 	public ResponseEntity<Account> restoreAccount(@PathVariable Long id) {
 		Account restoredAccount = accountService.restoreAccount(id);
 		return ResponseEntity.ok(restoredAccount);
-	}
-
-	@DeleteMapping("/{id}/physical")
-	public ResponseEntity<Void> physicalDeleteAccount(@PathVariable Long id) {
-		accountService.physicalDeleteAccount(id);
-		return ResponseEntity.noContent().build();
 	}
 }
