@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Inheritance;
@@ -12,7 +11,6 @@ import jakarta.persistence.InheritanceType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -22,13 +20,11 @@ public class User extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
 
-    // ... (Atributos fullName, name, password, email permanecem os mesmos)
 	private String fullName;
 	private String name;
 	private String password;
 	private String email;
 
-    // A anotação @JsonManagedReference foi removida daqui
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "user_role_assignments",
@@ -36,9 +32,6 @@ public class User extends BaseEntity {
         inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private Set<UserRole> roles = new HashSet<>();
-
-    // O relacionamento de volta para Session foi completamente removido.
-    // É mais performático e simples buscar as sessões de um usuário através do SessionRepository.
 
     public User() {
         super();
@@ -52,7 +45,6 @@ public class User extends BaseEntity {
         this.email = email;
     }
 
-    // Getters e Setters (sem os de sessions)
     public String getFullName() { return fullName; }
     public void setFullName(String fullName) { this.fullName = fullName; }
     public String getName() { return name; }
@@ -64,7 +56,6 @@ public class User extends BaseEntity {
     public Set<UserRole> getRoles() { return roles; }
     public void setRoles(Set<UserRole> roles) { this.roles = roles; }
 
-    // hashCode e equals permanecem os mesmos
     @Override
     public int hashCode() {
         return Objects.hash(email);
